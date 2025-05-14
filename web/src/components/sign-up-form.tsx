@@ -14,7 +14,7 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { signUpSchema, type SignUpSchema } from "@/schemas/sign-up"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signup } from "@/app/login/actions"
+import { signup } from "@/app/login/actions.server"
 import { toast } from "sonner"
 import { redirect } from "next/navigation"
 
@@ -30,17 +30,26 @@ export function SignUpForm({
     console.log(data)
     // Sleep for 2 seconds
     // await new Promise(resolve => setTimeout(resolve, 2000));
-    const { error } = await signup(data)
-    if (error) {
+    try {
+      await signup(data)
+      toast.success("Sign up successful")
+      redirect('/login')
+    } catch (error) {
+      console.error(error)
       toast.error(error.message)
       redirect('/')
-    } else {
-      toast.success("Sign up successful")
-      redirect('/')
     }
+  //   await signup(data)
+  //   if (error) {
+  //     toast.error(error.message)
+  //     redirect('/')
+  //   } else {
+  //     toast.success("Sign up successful")
+  //     redirect('/')
+  //   }
+  // }
+
   }
-
-
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

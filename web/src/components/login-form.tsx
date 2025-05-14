@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { login } from '@/app/login/actions'
+import { login } from '@/app/login/actions.client'
 import { toast } from "sonner"
 import { redirect } from "next/navigation"
 import { loginSchema, type LoginSchema } from "@/schemas/login"
@@ -31,12 +31,12 @@ export function LoginForm({
     console.log(data)
     // Sleep for 2 seconds
     // await new Promise(resolve => setTimeout(resolve, 2000));
-    const { error } = await login(data)
-    if (error) {
-      toast.error(error.message)
-      redirect('/')
-    } else {
+    try {
+      await login(data)
       toast.success("Login successful")
+      redirect('/')
+    } catch (error) {
+      toast.error(error.message)
       redirect('/')
     }
   }
