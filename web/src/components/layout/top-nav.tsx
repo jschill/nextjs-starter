@@ -1,16 +1,20 @@
-import { User } from "@supabase/supabase-js";
+"use client"
+
 import { UserMenubar } from "./user-menubar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useAuth } from "@/hooks/use-auth";
 
+function TopNav() {
+  const { user, isLoading } = useAuth()
 
-function TopNav({ user }: { user?: User }) {
   return (
     <div className="bg-accent-foreground text-white flex justify-between items-center p-4">
       <span>next-starter</span>
       <div className="text-black">
-        {user?.email && <UserMenubar email={user.email} />}
-        {!user?.email && <Button variant="outline" asChild><Link href="/login">Login</Link></Button>}
+        {isLoading && <span>Loading...</span>}
+        {user?.email && !isLoading && <UserMenubar email={user.email} />}
+        {!user?.email && !isLoading && <Button variant="outline" asChild><Link href="/login">Login</Link></Button>}
       </div>
     </div>
   )

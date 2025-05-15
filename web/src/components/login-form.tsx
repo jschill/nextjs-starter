@@ -15,7 +15,9 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { login } from '@/app/login/actions.client'
 import { toast } from "sonner"
-import { redirect } from "next/navigation"
+// import { redirect } from "next/navigation"
+import { useRouter } from 'next/navigation'
+
 import { loginSchema, type LoginSchema } from "@/schemas/login"
 
 
@@ -26,7 +28,7 @@ export function LoginForm({
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
   })
-
+  const router = useRouter()
   const onSubmit = async (data: LoginSchema) => {
     console.log(data)
     // Sleep for 2 seconds
@@ -34,10 +36,10 @@ export function LoginForm({
     try {
       await login(data)
       toast.success("Login successful")
-      redirect('/')
+      router.push('/')
     } catch (error) {
       toast.error(error.message)
-      redirect('/')
+      router.push('/error')
     }
   }
   
