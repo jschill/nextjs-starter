@@ -4,9 +4,16 @@ import { UserMenubar } from "./user-menubar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth } from "@/hooks/use-auth";
+import { useUserStore } from "@/stores/user";
+import { useEffect } from "react";
 
 function TopNav() {
   const { user, isLoading } = useAuth()
+  const fetchUser = useUserStore((state) => state.fetchUser)
+
+  useEffect(() => {
+    fetchUser()
+  }, [fetchUser])
 
   return (
     <div className="bg-accent-foreground text-white flex justify-between items-center p-4">
