@@ -2,7 +2,7 @@
 
 // import { revalidatePath } from 'next/cache'
 // import { redirect } from 'next/navigation'
-import { signUp } from '@/services/auth.server'
+import { signUp } from '@/services/server/auth'
 export async function signup(data: { email: string, password: string }) {
 
   try {

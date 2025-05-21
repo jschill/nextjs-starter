@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { db } from '@/db'
-import { organizations, organizationMembers } from '@/db/schemas'
+import { organizations, organizationMembers, NewOrganization } from '@/db/schemas'
 
 // Mark as Node.js runtime to allow database access
 export const runtime = 'nodejs'
@@ -27,32 +27,30 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    
-    // Generate unique ID
-    const id = crypto.randomUUID()
-    
+
     // Create organization
-    await db.insert(organizations).values({
-      id,
+    const createdOrganization = await db.insert(organizations).values({
       name,
       vatnr,
       country,
       ownerId: user.id,
       createdAt: new Date(),
       updatedAt: new Date()
-    })
-    
+    } as NewOrganization).returning({ id: organizations.id })
+
+    const createdOrganizationId = createdOrganization[0].id
+
     // Add the user as an owner
     await db.insert(organizationMembers).values({
       userId: user.id,
-      organizationId: id,
+      organizationId: createdOrganizationId,
       role: 'owner',
       joinedAt: new Date(),
       updatedAt: new Date(),
       isActive: true
     })
     
-    return NextResponse.json({ id, success: true })
+    return NextResponse.json({ id: createdOrganizationId, success: true })
   } catch (error) {
     console.error('Error creating organization:', error)
     return NextResponse.json(

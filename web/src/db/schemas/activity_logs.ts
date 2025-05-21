@@ -1,14 +1,14 @@
 import { pgTable, serial, text, timestamp, varchar, uuid } from "drizzle-orm/pg-core"
 import { organizations } from "./organizations"
 import { relations } from "drizzle-orm"
-import { users } from "./users"
+import { authUsers } from '@/db/index'
 
 export const activityLogs = pgTable('activity_logs', {
   id: serial('id').primaryKey(),
   organizationId: uuid('organization_id')
     .notNull()
     .references(() => organizations.id),
-  userId: uuid('user_id').references(() => users.id),
+  userId: uuid('user_id').references(() => authUsers.id),
   action: text('action').notNull(),
   timestamp: timestamp('timestamp').notNull().defaultNow(),
   ipAddress: varchar('ip_address', { length: 45 }),
@@ -19,9 +19,9 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
     fields: [activityLogs.organizationId],
     references: [organizations.id],
   }),
-  user: one(users, {
+  user: one(authUsers, {
     fields: [activityLogs.userId],
-    references: [users.id],
+    references: [authUsers.id],
   }),
 }))
 

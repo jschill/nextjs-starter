@@ -13,17 +13,18 @@ export const TierSelect = ({ form }: { form: UseFormReturn<CreateOrganizationSch
         <FormItem>
           <FormLabel>Select a plan</FormLabel>
           <FormControl>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4"> */}
+            <div className="flex flex-col gap-y-4">
               {/* Basic Plan */}
               <div
                 onClick={() => field.onChange('basic')}
                 className={cn(
-                  "relative cursor-pointer rounded-lg border p-4 shadow-sm transition-all hover:border-primary",
+                  "relative cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary",
                   field.value === 'basic' ? "border-2 border-primary bg-primary/5" : "border-muted"
                 )}
               >
                 {field.value === 'basic' && (
-                  <div className="absolute right-2 top-2 h-5 w-5 flex items-center justify-center rounded-full bg-primary">
+                  <div className="absolute right-2 bottom-2 h-5 w-5 flex items-center justify-center rounded-full bg-primary">
                     <CheckIcon className="h-3 w-3 text-white" />
                   </div>
                 )}
@@ -48,12 +49,12 @@ export const TierSelect = ({ form }: { form: UseFormReturn<CreateOrganizationSch
               <div
                 onClick={() => field.onChange('pro')}
                 className={cn(
-                  "relative cursor-pointer rounded-lg border p-4 shadow-sm transition-all hover:border-primary",
+                  "relative cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary",
                   field.value === 'pro' ? "border-2 border-primary bg-primary/5" : "border-muted"
                 )}
               >
                 {field.value === 'pro' && (
-                  <div className="absolute right-2 top-2 h-5 w-5 flex items-center justify-center rounded-full bg-primary">
+                  <div className="absolute right-2 bottom-2 h-5 w-5 flex items-center justify-center rounded-full bg-primary">
                     <CheckIcon className="h-3 w-3 text-white" />
                   </div>
                 )}
@@ -82,12 +83,12 @@ export const TierSelect = ({ form }: { form: UseFormReturn<CreateOrganizationSch
               <div
                 onClick={() => field.onChange('enterprise')}
                 className={cn(
-                  "relative cursor-pointer rounded-lg border p-4 shadow-sm transition-all hover:border-primary",
+                  "relative cursor-pointer rounded-lg border-2 p-4 transition-all hover:border-primary",
                   field.value === 'enterprise' ? "border-2 border-primary bg-primary/5" : "border-muted"
                 )}
               >
                 {field.value === 'enterprise' && (
-                  <div className="absolute right-2 top-2 h-5 w-5 flex items-center justify-center rounded-full bg-primary">
+                  <div className="absolute right-2 bottom-2 h-5 w-5 flex items-center justify-center rounded-full bg-primary">
                     <CheckIcon className="h-3 w-3 text-white" />
                   </div>
                 )}

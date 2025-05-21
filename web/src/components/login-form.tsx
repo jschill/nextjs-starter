@@ -19,6 +19,7 @@ import { toast } from "sonner"
 import { useRouter } from 'next/navigation'
 
 import { loginSchema, type LoginSchema } from "@/schemas/login"
+import { is } from "drizzle-orm"
 
 
 export function LoginForm({
@@ -38,7 +39,13 @@ export function LoginForm({
       toast.success("Login successful")
       router.push('/')
     } catch (error) {
-      toast.error(error.message)
+      if (error instanceof Error && error.message === 'email_not_confirmed') {
+        toast.error("Email not confirmed, check your inbox")
+      } else if (error instanceof Error) {
+        toast.error(error?.message)
+      } else {
+        toast.error("Something went wrong")
+      }
       router.push('/error')
     }
   }

@@ -25,7 +25,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { getCountryDataList } from 'countries-list'
-// import { TierSelect } from './blocks/tier-select'
+import { TierSelect } from './blocks/tier-select'
 
 export function CreateOrganizationForm({
   className,
@@ -35,10 +35,10 @@ export function CreateOrganizationForm({
   const form = useForm<CreateOrganizationSchema>({
     resolver: zodResolver(createOrganizationSchema),
     defaultValues: {
-      plan: undefined,
       name: '',
       vat: '',
-      country: ''
+      country: '',
+      plan: 'pro',
     }
   })
 
@@ -58,14 +58,33 @@ export function CreateOrganizationForm({
         }),
       })
       
+      let organizationData
+      try {
+        organizationData = await response.json()
+      } catch (error) {
+        console.error('Error creating organization:', error)
+      }
+
       if (!response.ok) {
-        const errorData = await response.json()
+        const errorData = organizationData
         throw new Error(errorData.error || 'Failed to create organization')
       }
       
       toast.success('Organization created successfully!')
-      router.push('/dashboard')
-      router.refresh()
+
+      const stripeCheckoutSession = await fetch('/api/stripe/checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lookup_key: 'base',
+          organizationId: organizationData.id
+        }),
+      })
+
+      const stripeCheckoutSessionData = await stripeCheckoutSession.json()
+
+      router.push(stripeCheckoutSessionData.url)
+      // router.refresh()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create organization')
       console.error('Error creating organization:', error)
@@ -144,9 +163,9 @@ export function CreateOrganizationForm({
                   </div>
 
                   {/* Pricing Tier Selection */}
-                  {/* <div className="grid gap-2">
+                  <div className="grid gap-2">
                     <TierSelect form={form} />
-                  </div> */}
+                  </div>
 
                   <Button
                     type="submit"
@@ -156,7 +175,6 @@ export function CreateOrganizationForm({
                     {isSubmitting ? "Creating..." : "Create"}
                   </Button>
                 </div>
-                <pre>{JSON.stringify(form.getValues(), null, 2)}</pre>
               </div>
               
             </CardContent>

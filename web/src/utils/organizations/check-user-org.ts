@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
-import { hasUserOrganization } from '@/services/organization'
+import { hasUserOrganization } from '@/services/server/organization'
 
 export async function checkUserHasOrganization() {
   const supabase = await createClient()

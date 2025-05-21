@@ -16,12 +16,13 @@ import { signUpSchema, type SignUpSchema } from "@/schemas/sign-up"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { signup } from "@/app/login/actions.server"
 import { toast } from "sonner"
-import { redirect } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 export function SignUpForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const router = useRouter()
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
   })
@@ -33,11 +34,11 @@ export function SignUpForm({
     try {
       await signup(data)
       toast.success("Sign up successful")
-      redirect('/login')
+      router.push('/login')
     } catch (error) {
       console.error(error)
       toast.error(error.message)
-      redirect('/')
+      router.push('/')
     }
   //   await signup(data)
   //   if (error) {

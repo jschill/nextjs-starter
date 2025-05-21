@@ -2,7 +2,6 @@
 // services/auth.ts
 import { createClient } from '@/utils/supabase/server'
 import { db } from '@/db'
-import { users } from '@/db/schemas'
 import { eq } from 'drizzle-orm'
 
 export async function signUp(email: string, password: string) {
@@ -15,13 +14,6 @@ export async function signUp(email: string, password: string) {
 
   if (error) {
     throw error
-  }
-
-  // Insert user into your database with Drizzle
-  if (data.user) {
-    await db.insert(users).values({
-      id: data.user.id,
-    })
   }
 
   return data
