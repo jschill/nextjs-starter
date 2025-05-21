@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { Label } from '@/components/ui/label'
@@ -9,7 +8,8 @@ import { createOrganizationSchema, type CreateOrganizationSchema } from '@/schem
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import { createOrganization } from '@/app/organizations/actions'
+import { createOrganization } from '@/app/create-organization/actions'
+import { createCheckoutSession } from '@/app/(protected)/subscription/actions'
 import {
   Select,
   SelectContent,
@@ -44,26 +44,19 @@ export function CreateOrganizationForm({
   })
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = form
-  const router = useRouter()
 
   const onSubmit = async (data: CreateOrganizationSchema) => {
     try {
       const { id } = await createOrganization(data)
       
-      toast.success(`Organization created successfully! ID: ${id}`)
+      toast.success(`Organization created, redirecting to checkout...`)
 
-      const stripeCheckoutSession = await fetch('/api/stripe/checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lookup_key: 'base',
-          organizationId: id
-        }),
+      const stripeCheckoutSession = await createCheckoutSession({
+        lookup_key: 'base',
+        organizationId: id
       })
 
-      const stripeCheckoutSessionData = await stripeCheckoutSession.json()
-
-      router.push(stripeCheckoutSessionData.url)
+      window.location.href = stripeCheckoutSession.url
       // router.refresh()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create organization')

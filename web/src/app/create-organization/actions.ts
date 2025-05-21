@@ -1,10 +1,8 @@
-// app/organizations/actions.ts
 "use server"
 
 import { createClient } from '@/utils/supabase/server'
 import { db } from '@/db'
 import { organizations, organizationMembers, NewOrganization } from '@/db/schemas'
-// import { cookies } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 import { CreateOrganizationSchema } from '@/schemas/create-organization'
 
