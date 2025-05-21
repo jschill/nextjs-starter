@@ -21,7 +21,6 @@ export default async function OrganizationDetailsPage({
     return notFound()
   }
   const { id: organizationId } = await params
-  console.log(organizationId)
   const [organizationData, invitationsData] = await Promise.all([
     getOrganizationWithMembers(organizationId),
     getOrganizationInvitations(organizationId)
@@ -30,7 +29,6 @@ export default async function OrganizationDetailsPage({
   if (!organizationData) {
     return notFound()
   }
-  console.log('organizationData', organizationData)
   // Check if user has permission to view this organization
   const userMembership = organizationData.organizationMembers.find(member => 
     member.userId === user.id

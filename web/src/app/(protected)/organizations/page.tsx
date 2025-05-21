@@ -44,7 +44,6 @@ export default async function OrganizationsPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {userOrgs.map((membership) => {
-            console.log('membership', membership)
             const latestSubscription = membership.organization.subscriptions[0]
             return (
               <Card key={membership.organizationId} className="overflow-hidden">

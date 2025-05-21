@@ -29,7 +29,6 @@ export function LoginForm({
   const login = useUserStore((state) => state.login)
   
   const onSubmit = async (data: LoginSchema) => {
-    console.log(data)
     // Sleep for 2 seconds
     // await new Promise(resolve => setTimeout(resolve, 2000));
     try {

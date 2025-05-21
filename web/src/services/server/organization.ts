@@ -47,7 +47,6 @@ export const getUserOrganization = async (userId: string, organizationId: string
 
 // Get organization with all its members
 export const getOrganizationWithMembers = async (organizationId: string) => {
-  console.log('omgomg', organizationId)
   const org = await getOrganizationByIdWithMembersAndLatestSubscription(organizationId)
   if (!org) return null;
   return org

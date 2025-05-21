@@ -36,7 +36,7 @@ export async function POST(
     
     // Get the invitation details
     const invitation = await db.query.invitations.findFirst({
-      where: eq(invitations.id, invitationId)
+      where: eq(invitations.id, parseInt(invitationId))
     })
     
     if (!invitation) {
