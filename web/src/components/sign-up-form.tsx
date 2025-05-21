@@ -14,9 +14,9 @@ import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { signUpSchema, type SignUpSchema } from "@/schemas/sign-up"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signup } from "@/app/login/actions.server"
+import { signup } from "@/app/sign-up/actions"
 import { toast } from "sonner"
-import { redirect, useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 
 export function SignUpForm({
   className,
@@ -27,29 +27,16 @@ export function SignUpForm({
     resolver: zodResolver(signUpSchema),
   })
 
-  const onSubmit = async (data: SignUpSchema) => {
-    console.log(data)
-    // Sleep for 2 seconds
-    // await new Promise(resolve => setTimeout(resolve, 2000));
+  const handleSignUp = async (data: SignUpSchema) => {
     try {
       await signup(data)
       toast.success("Sign up successful")
       router.push('/login')
     } catch (error) {
       console.error(error)
-      toast.error(error.message)
+      toast.error(error instanceof Error ? error.message : "An unknown error occurred")
       router.push('/')
     }
-  //   await signup(data)
-  //   if (error) {
-  //     toast.error(error.message)
-  //     redirect('/')
-  //   } else {
-  //     toast.success("Sign up successful")
-  //     redirect('/')
-  //   }
-  // }
-
   }
 
   return (
@@ -62,7 +49,7 @@ export function SignUpForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(handleSignUp)}>
             <div className="grid gap-6">
               <div className="grid gap-6">
                 <div className="grid gap-2">

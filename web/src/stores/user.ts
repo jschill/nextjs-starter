@@ -1,14 +1,14 @@
-import { User } from '@supabase/supabase-js'
+import { type User } from '@supabase/supabase-js'
 import { create } from 'zustand'
-import { createClient } from '@/utils/supabase/client'
-
+import { type LoginSchema } from "@/schemas/login"
+import { signIn, fetchUser } from '@/services/server/auth'
 type UserStore = {
   isLoading: boolean
   user: User | null
   setUser: (user: User) => void
   fetchUser: () => Promise<void>
+  login: (loginData: LoginSchema) => Promise<void>
 }
-const supabase = createClient()
 
 export const useUserStore = create<UserStore>((set) => ({
   isLoading: false,
@@ -17,16 +17,25 @@ export const useUserStore = create<UserStore>((set) => ({
   fetchUser: async () => {
     set({ isLoading: true })
     try {
-      const { data, error } = await supabase.auth.getUser()
-      if (error) {
-        console.error(error)
-      } else {
-        set({ user: data.user })
-      }
+      const data = await fetchUser()
+      set({ user: data.user })
     } catch (error) {
       console.error(error)
     } finally {
       set({ isLoading: false })
     }
+  },
+  login: async (loginData: LoginSchema) => {
+    set({ isLoading: true })
+    try {
+      const response = await signIn(loginData.email, loginData.password)
+      set({ user: response.user })
+    } catch (error) {
+      console.error(error)
+      throw error
+    } finally {
+      set({ isLoading: false })
+    }
   }
+
 }))

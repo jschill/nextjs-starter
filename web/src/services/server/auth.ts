@@ -3,10 +3,10 @@
 import { createClient } from '@/utils/supabase/server'
 import { db } from '@/db'
 import { eq } from 'drizzle-orm'
-
 export async function signUp(email: string, password: string) {
   const supabase = await createClient()
   // Create user in Supabase Auth
+  // If user already exists, it will return a dummy user to prevent user enumeration attacks
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -36,6 +36,18 @@ export async function signIn(email: string, password: string) {
 export async function signOut() {
   const supabase = await createClient()
   return await supabase.auth.signOut()
+}
+
+
+export async function fetchUser() {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
+
+  if (error) {
+    throw error
+  }
+
+  return data
 }
 
 export async function getCurrentUser() {

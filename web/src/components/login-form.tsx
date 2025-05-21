@@ -13,15 +13,11 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { login } from '@/app/login/actions.client'
+// import { login } from '@/app/login/actions'
 import { toast } from "sonner"
-// import { redirect } from "next/navigation"
 import { useRouter } from 'next/navigation'
-
 import { loginSchema, type LoginSchema } from "@/schemas/login"
-import { is } from "drizzle-orm"
-
-
+import { useUserStore } from "@/stores/user"
 export function LoginForm({
   className,
   ...props
@@ -30,6 +26,8 @@ export function LoginForm({
     resolver: zodResolver(loginSchema),
   })
   const router = useRouter()
+  const login = useUserStore((state) => state.login)
+  
   const onSubmit = async (data: LoginSchema) => {
     console.log(data)
     // Sleep for 2 seconds
