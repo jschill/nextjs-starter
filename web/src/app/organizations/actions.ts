@@ -1,32 +1,35 @@
-import { NextRequest, NextResponse } from 'next/server'
+// app/organizations/actions.ts
+"use server"
+
 import { createClient } from '@/utils/supabase/server'
 import { db } from '@/db'
 import { organizations, organizationMembers, NewOrganization } from '@/db/schemas'
+// import { cookies } from 'next/headers'
+import { revalidatePath } from 'next/cache'
+import { CreateOrganizationSchema } from '@/schemas/create-organization'
 
-// Mark as Node.js runtime to allow database access
-export const runtime = 'nodejs'
-// This route is converted to a server action
-// NO LONGER USED
-export async function POST(request: NextRequest) {
+export async function createOrganization(formData: CreateOrganizationSchema) {
   try {
+    const { name, vatnr, country } = formData
+    // const cookieStore = cookies()
     const supabase = await createClient()
     const { data } = await supabase.auth.getUser()
     const user = data.user
     
     if (!user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+      throw new Error('Unauthorized')
     }
     
-    const { name, vatnr, country } = await request.json()
-    
-    if (!name || !vatnr || !country) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+    if (!name) {
+      throw new Error('Name is required')
+    }
+
+    if (!vatnr) {
+      throw new Error('VAT number is required')
+    }
+
+    if (!country) {
+      throw new Error('Country is required')
     }
 
     // Create organization
@@ -51,12 +54,12 @@ export async function POST(request: NextRequest) {
       isActive: true
     })
     
-    return NextResponse.json({ id: createdOrganizationId, success: true })
+    // Revalidate the organizations page to show the new organization
+    revalidatePath('/organizations')
+    
+    return { id: createdOrganizationId, success: true }
   } catch (error) {
     console.error('Error creating organization:', error)
-    return NextResponse.json(
-      { error: 'Failed to create organization' },
-      { status: 500 }
-    )
+    throw error
   }
-} 
+}

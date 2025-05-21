@@ -9,6 +9,7 @@ import { createOrganizationSchema, type CreateOrganizationSchema } from '@/schem
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
+import { createOrganization } from '@/app/organizations/actions'
 import {
   Select,
   SelectContent,
@@ -36,7 +37,7 @@ export function CreateOrganizationForm({
     resolver: zodResolver(createOrganizationSchema),
     defaultValues: {
       name: '',
-      vat: '',
+      vatnr: '',
       country: '',
       plan: 'pro',
     }
@@ -47,37 +48,16 @@ export function CreateOrganizationForm({
 
   const onSubmit = async (data: CreateOrganizationSchema) => {
     try {
-      const response = await fetch('/api/organizations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.name,
-          vatnr: data.vat,
-          country: data.country,
-          plan: data.plan
-        }),
-      })
+      const { id } = await createOrganization(data)
       
-      let organizationData
-      try {
-        organizationData = await response.json()
-      } catch (error) {
-        console.error('Error creating organization:', error)
-      }
-
-      if (!response.ok) {
-        const errorData = organizationData
-        throw new Error(errorData.error || 'Failed to create organization')
-      }
-      
-      toast.success('Organization created successfully!')
+      toast.success(`Organization created successfully! ID: ${id}`)
 
       const stripeCheckoutSession = await fetch('/api/stripe/checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lookup_key: 'base',
-          organizationId: organizationData.id
+          organizationId: id
         }),
       })
 
@@ -88,6 +68,7 @@ export function CreateOrganizationForm({
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Failed to create organization')
       console.error('Error creating organization:', error)
+      throw error
     }
   }
   const countryDataList = getCountryDataList()
@@ -121,15 +102,15 @@ export function CreateOrganizationForm({
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center">
-                      <Label htmlFor="vat">VAT number</Label>
+                      <Label htmlFor="vatnr">VAT number</Label>
                     </div>
                     <Input
-                      id="vat"
+                      id="vatnr"
                       type="text"
-                      required {...register("vat")}
+                      required {...register("vatnr")}
                     />
-                    {errors.vat && (
-                      <p className="text-red-500">{errors.vat.message}</p>
+                    {errors.vatnr && (
+                      <p className="text-red-500">{errors.vatnr.message}</p>
                     )}
                   </div>
                   <div className="grid gap-2">
