@@ -7,6 +7,7 @@
  - [Drizzle ORM](https://orm.drizzle.team/)
  - UI: [shadcn/ui](https://ui.shadcn.com/), [Radix UI](https://www.radix-ui.com/), [Tailwind](https://tailwindcss.com/)
  - [Zod](https://zod.dev/), [react-hook-form](https://react-hook-form.com/)
+ - [zustand](https://github.com/pmndrs/zustand) state managment
  - [Stripe](https://stripe.com/) subscriptions
  - Server actions preferred over API which has its pros and cons.
 
