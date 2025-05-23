@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/utils/supabase/server'
 import { createInvitation } from '@/services/server/organization'
-
-// Mark as Node.js runtime to allow database access
-export const runtime = 'nodejs'
+import { invitationSchema } from '@/schemas/invitation'
+import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,33 +17,9 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    const { email, role, organizationId } = await request.json()
-    
-    if (!email || !organizationId || !role) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-    
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      )
-    }
-    
-    // Validate role
-    const validRoles = ['admin', 'member']
-    if (!validRoles.includes(role)) {
-      return NextResponse.json(
-        { error: 'Invalid role' },
-        { status: 400 }
-      )
-    }
-    
+    const body = await request.json()
+    const { email, role, organizationId } = invitationSchema.parse(body)
+
     // Create the invitation
     try {
       const invitationId = await createInvitation({
@@ -70,6 +45,12 @@ export async function POST(request: NextRequest) {
       throw error
     }
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(
+        { error: error.errors[0].message },
+        { status: 400 }
+      )
+    }
     console.error('Error creating invitation:', error)
     return NextResponse.json(
       { error: 'Failed to create invitation' },
