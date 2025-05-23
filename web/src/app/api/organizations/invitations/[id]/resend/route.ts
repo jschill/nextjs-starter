@@ -55,7 +55,7 @@ export async function POST(
     }
     
     // Cancel the old invitation
-    await cancelInvitation(invitationId)
+    await cancelInvitation(parsedInvitationId)
     
     // Create a new invitation with the same details
     const newInvitationId = await createInvitation({

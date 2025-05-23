@@ -101,10 +101,10 @@ export const createInvitation = async (data: {
 }
 
 // Cancel/delete an invitation
-export const cancelInvitation = async (invitationId: string) => {
+export const cancelInvitation = async (invitationId: number) => {
   // First get the invitation to ensure it's a number
   const invitation = await db.query.invitations.findFirst({
-    where: eq(invitations.id, Number(invitationId))
+    where: eq(invitations.id, invitationId)
   });
   
   if (!invitation) {
