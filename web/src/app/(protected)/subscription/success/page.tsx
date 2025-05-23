@@ -3,7 +3,6 @@
 import { handleCheckoutSuccess } from '@/app/(protected)/subscription/actions'
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { NextResponse } from 'next/server'
 
 export default async function CheckoutSuccessPage({
   searchParams,
@@ -15,10 +14,7 @@ export default async function CheckoutSuccessPage({
   const { data } = await supabase.auth.getUser()
   const user = data.user
   if (!user) {
-    return NextResponse.json(
-      { error: 'Unauthorized' },
-      { status: 401 }
-    )
+    redirect('/error?reason=unauthorized')
   }
 
 
