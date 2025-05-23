@@ -1,10 +1,10 @@
-"use client"
+'use server'
+import { signIn } from '@/services/server/auth'
 
-import { signIn } from '@/services/auth.client'
 export async function login(data: { email: string, password: string }) {
   try {
     await signIn(data.email, data.password)
   } catch (error) {
-    return { error}
+    throw error
   }
 }

@@ -1,6 +1,6 @@
 "use server"
 import { NextRequest, NextResponse } from 'next/server'
-import { signOut } from '@/services/auth.server'
+import { signOut } from '@/services/server/auth'
 
 export async function GET(request: NextRequest) {
   try {

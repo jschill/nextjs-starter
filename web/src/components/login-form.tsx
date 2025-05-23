@@ -13,14 +13,11 @@ import { Label } from "@/components/ui/label"
 import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { login } from '@/app/login/actions.client'
+// import { login } from '@/app/login/actions'
 import { toast } from "sonner"
-// import { redirect } from "next/navigation"
 import { useRouter } from 'next/navigation'
-
 import { loginSchema, type LoginSchema } from "@/schemas/login"
-
-
+import { useUserStore } from "@/stores/user"
 export function LoginForm({
   className,
   ...props
@@ -29,8 +26,9 @@ export function LoginForm({
     resolver: zodResolver(loginSchema),
   })
   const router = useRouter()
+  const login = useUserStore((state) => state.login)
+  
   const onSubmit = async (data: LoginSchema) => {
-    console.log(data)
     // Sleep for 2 seconds
     // await new Promise(resolve => setTimeout(resolve, 2000));
     try {
@@ -38,7 +36,13 @@ export function LoginForm({
       toast.success("Login successful")
       router.push('/')
     } catch (error) {
-      toast.error(error.message)
+      if (error instanceof Error && error.message === 'email_not_confirmed') {
+        toast.error("Email not confirmed, check your inbox")
+      } else if (error instanceof Error) {
+        toast.error(error?.message)
+      } else {
+        toast.error("Something went wrong")
+      }
       router.push('/error')
     }
   }

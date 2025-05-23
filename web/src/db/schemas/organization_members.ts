@@ -7,15 +7,14 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core'
 import { relations } from 'drizzle-orm'
-
-import { users } from './users'
+import { authUsers } from '@/db/index'
 import { organizations } from './organizations'
 
 export const organizationMembers = pgTable('organization_members', {
   id: serial('id').primaryKey(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.id),
+    .references(() => authUsers.id),
   organizationId: uuid('organization_id')
     .notNull()
     .references(() => organizations.id),
@@ -26,9 +25,9 @@ export const organizationMembers = pgTable('organization_members', {
 })
 
 export const organizationMembersRelations = relations(organizationMembers, ({ one }) => ({
-  user: one(users, {
+  user: one(authUsers, {
     fields: [organizationMembers.userId],
-    references: [users.id],
+    references: [authUsers.id],
   }),
   organization: one(organizations, {
     fields: [organizationMembers.organizationId],

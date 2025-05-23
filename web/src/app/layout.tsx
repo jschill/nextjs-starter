@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/sonner"
 import { TopNav } from "@/components/layout/top-nav"
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { createClient } from '@/utils/supabase/server'
+import { MainContent } from "@/components/layout/main-content";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -24,18 +24,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient()
-  const { data, error } = await supabase.auth.getUser()
-
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-muted`}
       >
-        <TopNav user={data?.user} />
-        <main>
+        <TopNav />
+        <MainContent>
           {children}
-        </main>
+        </MainContent>
         <Toaster />
       </body>
     </html>
