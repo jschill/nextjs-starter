@@ -33,10 +33,18 @@ export async function POST(
         { status: 400 }
       )
     }
+
+    const parsedInvitationId = parseInt(invitationId)
+    if (isNaN(parsedInvitationId)) {
+      return NextResponse.json(
+        { error: 'Invalid Invitation ID' },
+        { status: 400 }
+      )
+    }
     
     // Get the invitation details
     const invitation = await db.query.invitations.findFirst({
-      where: eq(invitations.id, parseInt(invitationId))
+      where: eq(invitations.id, parsedInvitationId)
     })
     
     if (!invitation) {
