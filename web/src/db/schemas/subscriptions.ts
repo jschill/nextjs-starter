@@ -8,7 +8,7 @@ export const subscriptions = pgTable('subscriptions', {
     .notNull()
     .references(() => organizations.id),
   stripeEvent: text('stripe_event'),
-  stripeSubscriptionId: text('stripe_subscription_id').unique(),
+  stripeSubscriptionId: text('stripe_subscription_id'),
   stripeProductId: text('stripe_product_id'),
   planName: varchar('plan_name', { length: 50 }),
   subscriptionStatus: varchar('subscription_status', { length: 20 }),

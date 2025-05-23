@@ -1,5 +1,5 @@
 {
-  "id": "8f948e47-0247-47a4-a45c-6aeaea0d97fc",
+  "id": "046db3cd-43eb-4332-b023-e5ab61bce229",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -500,15 +500,7 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "subscriptions_stripe_subscription_id_unique": {
-          "name": "subscriptions_stripe_subscription_id_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "stripe_subscription_id"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

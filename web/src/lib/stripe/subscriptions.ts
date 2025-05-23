@@ -1,4 +1,4 @@
-import { Stripe } from "./index";
+import { stripe, Stripe } from "./index";
 import { getOrganizationByStripeCustomerId } from "@/db/queries/organizations";
 import { insertSubscription } from "@/db/queries/subscriptions";
 import { NewSubscription } from "@/db/schemas";
@@ -17,14 +17,23 @@ export async function handleSubscriptionChange(
   }
 
   const plan = subscription.items.data[0]?.plan;
+  
+  const priceId = plan?.id;
+  let lookupKey = '';
+  if (priceId) {
+    const price = await stripe.prices.retrieve(priceId);
+    lookupKey = price.lookup_key || '';
+  }
+
   const newSubscription: NewSubscription = {
     organizationId: organization.id,
     stripeEvent: eventType,
     stripeSubscriptionId: subscriptionId,
     stripeProductId: plan?.product as string,
-    planName: (plan?.product as Stripe.Product).name,
+    planName: lookupKey,
     subscriptionStatus: status
   }
 
   await insertSubscription(newSubscription);
 }
+

@@ -62,8 +62,7 @@ CREATE TABLE "subscriptions" (
 	"stripe_product_id" text,
 	"plan_name" varchar(50),
 	"subscription_status" varchar(20),
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "subscriptions_stripe_subscription_id_unique" UNIQUE("stripe_subscription_id")
+	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 ALTER TABLE "activity_logs" ADD CONSTRAINT "activity_logs_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "public"."organizations"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint

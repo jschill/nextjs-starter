@@ -4,19 +4,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { format } from "date-fns"
 import { Organization } from "@/db/schemas/organizations"
 import { Subscription } from "@/db/schemas/subscriptions"
-import { useMemo } from "react"
+import { Button } from "../ui/button"
+import { customerPortalAction } from "@/lib/stripe/server-actions"
+
 interface OrganizationOverviewProps {
   organization: Organization & { subscriptions: Subscription[] }
 }
 
 export function OrganizationOverview({ organization }: OrganizationOverviewProps) {
   const latestSubscription = organization.subscriptions[0] 
-  const subscriptionInfo = useMemo(() => {
-    return {
-      planName: latestSubscription?.planName || '-',
-      subscriptionStatus: latestSubscription?.subscriptionStatus || '-',
-    } 
-  }, [latestSubscription])
+  const subscriptionInfo = {
+    planName: latestSubscription?.planName || '-',
+    subscriptionStatus: latestSubscription?.subscriptionStatus || '-',
+  }
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -60,16 +60,21 @@ export function OrganizationOverview({ organization }: OrganizationOverviewProps
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <dl className="grid gap-4">
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Plan</dt>
-              <dd className="mt-1 capitalize">{subscriptionInfo?.planName || '-'}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-muted-foreground">Status</dt>
-              <dd className="mt-1 capitalize">{subscriptionInfo?.subscriptionStatus || '-'}</dd>
-            </div>
-          </dl>
+          <div className="flex flex-row gap-4 justify-between">
+            <dl className="grid gap-4">
+              <div>
+                <dt className="text-sm font-medium text-muted-foreground">Plan</dt>
+                <dd className="mt-1 capitalize">{subscriptionInfo?.planName || '-'}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-muted-foreground">Status</dt>
+                <dd className="mt-1 capitalize">{subscriptionInfo?.subscriptionStatus || '-'}</dd>
+              </div>
+            </dl>
+            <form className="self-end" action={() => customerPortalAction(organization.id)}>
+              <Button type="submit">Manage Subscription</Button>
+            </form>
+          </div>
         </CardContent>
       </Card>
     </div>

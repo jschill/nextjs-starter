@@ -10,7 +10,7 @@ import { organizationMembers } from './organization_members'
 import { activityLogs } from './activity_logs'
 import { invitations } from './invitations'
 import { authUsers } from '@/db/index'
-import { subscriptions } from './subscriptions'
+import { type Subscription, subscriptions } from './subscriptions'
 export const organizations = pgTable('organizations', {
   id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 100 }).notNull(),
@@ -39,3 +39,10 @@ export const organizationsRelations = relations(organizations, ({ many, one }) =
 
 export type Organization = typeof organizations.$inferSelect
 export type NewOrganization = typeof organizations.$inferInsert 
+
+
+// export type OrganizationWithLatestSubscription = Awaited<ReturnType<typeof getOrganizationByIdWithLatestSubscription>>
+
+export type OrganizationWithSubscription = Organization & {
+  subscriptions: Subscription[]
+}

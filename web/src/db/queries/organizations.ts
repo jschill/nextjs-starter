@@ -1,6 +1,6 @@
 import { eq, desc } from "drizzle-orm"
 import { db } from "@/db"
-import { organizations } from "../schemas";
+import { organizations, OrganizationWithSubscription } from "../schemas";
 
 export async function getOrganizationById(organizationId: string) {
   const result = await db.query.organizations.findFirst({
@@ -18,7 +18,7 @@ export async function getOrganizationByStripeCustomerId(stripeCustomerId: string
   return result;
 }
 
-export async function getOrganizationByIdWithLatestSubscription(organizationId: string) {
+export async function getOrganizationByIdWithLatestSubscription(organizationId: string): Promise<OrganizationWithSubscription | undefined> {
   const result = await db.query.organizations.findFirst({
     where: (orgs) => eq(orgs.id, organizationId),
     with: {
@@ -31,6 +31,8 @@ export async function getOrganizationByIdWithLatestSubscription(organizationId: 
 
   return result;
 }
+
+// type OrganizationWithLatestSubscription = Awaited<ReturnType<typeof getOrganizationByIdWithLatestSubscription>>
 
 export async function setStripeCustomerIdForOrganization(organizationId: string, stripeCustomerId: string) {
   await db

@@ -1,3 +1,4 @@
+"use server"
 import { createClient } from "@/utils/supabase/server"
 import { notFound } from "next/navigation"
 import { getOrganizationWithMembers, getOrganizationInvitations } from "@/services/server/organization"
